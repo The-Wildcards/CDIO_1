@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-enum GameState { AWAIT, STARTED, PLAYING, ENDED}
+enum GameState { AWAIT, SETUP, PLAYING, ENDED}
 
 public class GameManager {
 
@@ -10,6 +10,7 @@ public class GameManager {
 
     public static List<Player> players = new ArrayList<>();  
     public static List<Dice> dices = new ArrayList<>();
+    public static int lastRoll = 0;
 
     public static void Start(){
         StringBuilder builder = new StringBuilder();
@@ -31,7 +32,7 @@ public class GameManager {
             var input = scanner.nextInt();
             switch(input){
                 case 1 -> {
-                    gameState = GameState.STARTED;
+                    gameState = GameState.SETUP;
                     return;
                 }
                 case 2 -> {
@@ -56,10 +57,7 @@ public class GameManager {
         CreatePlayers(players);
 
         // Setup the dice
-        CreateDice(2);
-    
-        // Setup any expansion packs
-        SetupExpansions();
+        CreateDice(2);   
     }
 
     public static void CreatePlayers(int amount){
@@ -99,52 +97,93 @@ public class GameManager {
         }
     }
 
-    private static void SetupExpansions(){
-        StringBuilder builder = new StringBuilder();
- 
-        builder.append(new String("Would you like to include any expansions? \n\n"));
-        builder.append(new String("(1) Expansion 1: If the player rolls two 1, the player looses all their points.\n"));
-        builder.append(new String("(2) Expansion 2: If the player rolls two equals, the player gets an extra turn.\n"));
-        builder.append(new String("(3) Expansion 3: If the player in his previous throw, rolled two 6, and rolles two 6 in this roll, he wins the game.\n"));
-        builder.append(new String("(4) Expansion 4: After reaching 40 points, the player has to roll two equals, to win the game.\n"));
-        builder.append(new String("(5) All of the above \n"));
-        builder.append(new String("(6) None \n"));
+    public static void SetupExpansions() {
+        // Loop through until the gamestate has been changed
+        while(gameState == GameState.SETUP){
+            StringBuilder builder = new StringBuilder();
+                
+            builder.append(new String("Would you like to include any expansions? \n\n"));
 
-        String result = builder.toString();
+            for(int i = 0; i < ExpansionManager.exspansions.size(); i++){
 
-        System.out.println(result);
+                // Get the rules of the expansion as string
+                String ruleStr = ExpansionManager.exspansions.get(i).GetRulesAsString();
 
-        // Create a scanner to read the next input
-        Scanner scanner = new Scanner(System.in);
+                // Set the ID
+                int id = i + 1;
 
-        while(scanner.hasNextInt()){
-            var input = scanner.nextInt();
-            switch(input){
+                // Get a color based on whether or not the expansion is activated
+                String color = ExpansionManager.exspansions.get(i).enabled ? ColorUtils.TEXT_GREEN : ColorUtils.TEXT_RED;
+
+                builder.append(new String(color + "(" + (id) + ")" + " Expansion " + (id) + ": " + ColorUtils.TEXT_WHITE + ruleStr ));
+            }
+
+            builder.append(new String("(5) All of the above \n"));
+            builder.append(new String("(6) None \n\n"));
+
+            builder.append(new String("(7) Continue \n"));
+            
+            System.out.println(builder.toString());
+
+            Scanner scanner = new Scanner(System.in);
+
+            int input = scanner.nextInt();
+
+            switch (input) {
                 case 1 -> {
                     // Enable expansion 1
+                    Expansion exp = ExpansionManager.GetExpansionByID(1);
+                    exp.enabled = !exp.enabled;
+                    continue;
                 }
-                case 2 -> {
-                     // Enable expansion 2
+                case 2
+                 -> {
+                    // Enable expansion 2
+                    Expansion exp = ExpansionManager.GetExpansionByID(2);
+                    exp.enabled = !exp.enabled;
+                    continue;  
                 }
                 case 3 -> {
-                     // Enable expansion 3
+                    // Enable expansion 3
+                    Expansion exp = ExpansionManager.GetExpansionByID(3);
+                    exp.enabled = !exp.enabled;
+                    continue;
                 }
                 case 4 -> {
-                     // Enable expansion 4
+                    // Enable expansion 4
+                    Expansion exp = ExpansionManager.GetExpansionByID(4);
+                    exp.enabled = !exp.enabled;
+                    continue;   
                 }
                 case 5 -> {
-                     // Enable all expensions
+                    // Enable all expansions
+                    ExpansionManager.GetExpansionByID(1).enabled = true;         
+                    ExpansionManager.GetExpansionByID(2).enabled = true;         
+                    ExpansionManager.GetExpansionByID(3).enabled = true;         
+                    ExpansionManager.GetExpansionByID(4).enabled = true;  
+                    continue;
                 }
                 case 6 -> {
-                    // Continue without any expansions
+                    // Enable all expansions
+                    ExpansionManager.GetExpansionByID(1).enabled = false;         
+                    ExpansionManager.GetExpansionByID(2).enabled = false;         
+                    ExpansionManager.GetExpansionByID(3).enabled = false;         
+                    ExpansionManager.GetExpansionByID(4).enabled = false; 
+                    continue;     
+
+                }
+                case 7 -> {
+                    // Continue the game
+                    gameState = GameState.PLAYING;
+
                 }
                 default -> {
                     System.out.println("Please specify a valid number");
                 }
             }
-        }
-        
 
-        scanner.close();
-    }
+            scanner.close();
+        }
+    }     
 }
+
