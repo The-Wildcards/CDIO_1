@@ -34,12 +34,15 @@ public class DiceTest {
             roll = dice.rollDice(); // Store dice roll in a variable
 
             diceStats.replace(roll, diceStats.get(roll) + 1); // Add 1 to the count of the number that was rolled
-            
+
             System.out.println("Rolled a " + roll); // Announces roll
         }
 
         // Calculate percentage differences
         percentages = compareStats(diceStats, expectedStats);
+
+        // Display results
+        displayResults(diceStats, percentages);
     }
 
     // Gives the percentage difference between a hashtable of roll stats and the expected stats
@@ -64,5 +67,32 @@ public class DiceTest {
 
         // Return full hashtable
         return percentages;
+    }
+
+    static void displayResults(Hashtable<Integer,Integer> rollsTable, Hashtable<Integer,Double> percentagesTable) {
+        // Variable for whether the test has succeeded
+        boolean testSucceeded = true;
+        
+        // Printing
+        System.out.println();
+        System.out.println("Test results:");
+
+        // Iterating through the tables
+        for (int i = 1; i <= 6; i++) {
+            // Set testSucceeded to false if percentage > 1
+            if (percentagesTable.get(i) > 1) { testSucceeded = false; }
+
+            // Print statistics
+            System.out.println(
+                String.format("%d's rolled: %d (%f%% off expected result)",
+                i, rollsTable.get(i), percentagesTable.get(i)
+            ));
+        }
+
+        // Announces test verdict
+        System.out.println();
+        System.out.println("Test " +(
+            testSucceeded ? "succeeded" : "passed"
+        ));
     }
 }
