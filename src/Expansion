@@ -13,9 +13,16 @@ public class Expansion{
 }
 
 class Exp1 extends Expansion {
-    @Override public boolean CheckRules(){
+     public boolean CheckRules(){
         System.out.println("true"); 
+        if(dices[0] == dices[1]){
+            return true
+        }
+        else {
+            return false;
+        {
         
     }
-}
-
+    }
+    }
+    }
