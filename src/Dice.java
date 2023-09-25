@@ -8,7 +8,7 @@ public class Dice {
     // Rolling the actual dice
     public int rollDice(){
         //Using math.random to generate random number between 1 and 6.
-        rollValue = (int) ((Math.random() * (6 - 1)) + 1) ;
+        rollValue = (int) ((Math.random() * (7 - 1)) + 1) ;
         return rollValue;
     }
 
