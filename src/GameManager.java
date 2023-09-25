@@ -35,7 +35,7 @@ public class GameManager {
                     return;
                 }
                 case 2 -> {
-                    // Displaye rules
+                    // Display rules
                 }
                 case 3 -> {
                     System.out.println("Thanks for playing!");
