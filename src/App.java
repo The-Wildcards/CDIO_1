@@ -1,18 +1,19 @@
-import java.util.Scanner;
-
 public class App {
+    public static GameManager gameManager = new GameManager();
+    public static ExpansionManager expansionManager = new ExpansionManager();
+
     public static void main(String[] args) throws Exception {
 
-        if(GameManager.gameState == GameState.AWAIT){
-            GameManager.Start();
+        if(gameManager.gameState == GameState.AWAIT){
+            gameManager.Start();
         }
-        if(GameManager.gameState == GameState.SETUP){       
-            ExpansionManager.GenerateExpansions();
-            GameManager.SetupExpansions();
-            GameManager.Initialize(2);
+        if(gameManager.gameState == GameState.SETUP){       
+            gameManager.Initialize(2);
+            expansionManager.GenerateExpansions();
+            expansionManager.SetupExpansions();
         }
-        if(GameManager.gameState == GameState.PLAYING){
-
+        if(gameManager.gameState == GameState.PLAYING){
+            gameManager.OnDiceRoll();
         }
     }
 }

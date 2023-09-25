@@ -6,6 +6,7 @@ public class Dice {
     public Dice (int rollValue){
         this.rollValue = rollValue;
     }
+
     // Rolling the actual dice
     public int rollDice(){
 

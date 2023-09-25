@@ -7,11 +7,11 @@ public class Expansion {
         this.enabled = false;
     } 
 
-    public String GetRulesAsString(){
+    public String Description(){
         return "";
     }
 
-    public boolean CheckRules(){
+    public boolean CheckRules(Dice dice1, Dice dice2){
         return true;
     }
 }
@@ -23,19 +23,15 @@ class Exp1 extends Expansion {
     }
 
     @Override
-    public String GetRulesAsString() {
+    public String Description() {
         return "If the player rolls two 1, the player loses all their points.\n";
 
     }
 
     @Override
-    public boolean CheckRules() {
+    public boolean CheckRules(Dice dice1, Dice dice2) {
 
-        // Get the roll values of the dices
-        int dice1 = GameManager.dices.get(0).getRollValue();
-        int dice2 = GameManager.dices.get(1).getRollValue();
-
-        if (dice1 == dice2) {
+        if (dice1.getRollValue() == dice2.getRollValue()) {
             return true;
         } else {
             return false;
@@ -50,12 +46,12 @@ class Exp2 extends Expansion {
     }
 
     @Override
-    public String GetRulesAsString(){
+    public String Description(){
         return "If the player rolls two equals, the player gets an extra turn.\n";
     }
 
     @Override
-    public boolean CheckRules() {
+    public boolean CheckRules(Dice dice1, Dice dice2) {
         return false;
     }
 }
@@ -67,20 +63,18 @@ class Exp3 extends Expansion {
     }
 
     @Override
-    public String GetRulesAsString(){
+    public String Description(){
         return "If the player in his previous throw, rolled two 6, and rolls two 6 in this roll, he wins the game.\n";
     }
 
     @Override
-    public boolean CheckRules() {
+    public boolean CheckRules(Dice dice1, Dice dice2) {
 
         //Get the sum of the last roll
-        int lastRoll = GameManager.lastRoll;
+        int lastRoll = App.gameManager.lastRoll;
 
         // Get the roll values of the dices
-        int dice1 = GameManager.dices.get(0).getRollValue();
-        int dice2 = GameManager.dices.get(1).getRollValue();
-        int sum = dice1 + dice2;
+        int sum = dice1.getRollValue() + dice2.getRollValue();
 
         var winner = sum == 12 && sum == lastRoll ? true : false;
         return winner;
@@ -95,12 +89,12 @@ class Exp4 extends Expansion {
     }
 
     @Override
-    public String GetRulesAsString(){
+    public String Description(){
         return "After reaching 40 points, the player has to roll two equals to win the game.\n";
     }
 
     @Override
-    public boolean CheckRules() {
+    public boolean CheckRules(Dice dice1, Dice dice2) {
         return false;
     }
 }
