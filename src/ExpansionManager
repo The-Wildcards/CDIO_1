@@ -1,4 +1,8 @@
-public class ExpansionManager(){
+public class ExpansionManager{
 
-    
+    public static void GenerateExpansions(){
+        Expansion exp1 = new Exp1(1);
+
+        System.out.println(exp1.CheckRules());
+    }
 }
