@@ -1,8 +1,12 @@
+import java.util.Scanner;
+
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
-
-        // 
-        GameManager.Initialize((2));
+        if(GameManager.gameState == GameState.AWAIT){
+            GameManager.Start();
+        }
+        if(GameManager.gameState == GameState.STARTED){       
+            GameManager.Initialize(2);
+        }
     }
 }
