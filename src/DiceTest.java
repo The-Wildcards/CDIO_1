@@ -92,7 +92,7 @@ public class DiceTest {
         // Announces test verdict
         System.out.println();
         System.out.println("Test " +(
-            testSucceeded ? "succeeded" : "passed"
+            testSucceeded ? "succeeded" : "failed"
         ));
     }
 }
