@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ExpansionManager {
 
-    public List<Expansion> exspansions = new ArrayList<>();
+    public List<Expansion> expansions = new ArrayList<>();
 
     public void GenerateExpansions(){
         Expansion exp1 = new Exp1(1, false);
@@ -12,14 +12,14 @@ public class ExpansionManager {
         Expansion exp3 = new Exp3(3, false);
         Expansion exp4 = new Exp4(4, false);
 
-        exspansions.add(exp1);;
-        exspansions.add(exp2);;
-        exspansions.add(exp3);;
-        exspansions.add(exp4);;
+        expansions.add(exp1);;
+        expansions.add(exp2);;
+        expansions.add(exp3);;
+        expansions.add(exp4);;
     }
 
     private Expansion GetExpansionByID(int id) {
-        Expansion exp = exspansions.stream().filter(x -> x.id == id).findFirst().orElse(null);
+        Expansion exp = expansions.stream().filter(x -> x.id == id).findFirst().orElse(null);
         return exp;
     }
 
@@ -29,7 +29,7 @@ public class ExpansionManager {
     }
 
     private void SetAllExpansionsActive(boolean enabled){
-        for (Expansion expansion : exspansions) {
+        for (Expansion expansion : expansions) {
             expansion.enabled = enabled;
         }
     }
@@ -43,16 +43,16 @@ public class ExpansionManager {
                 
             builder.append(new String("Would you like to include any expansions? \n\n"));
 
-            for(int i = 0; i < exspansions.size(); i++){
+            for(int i = 0; i < expansions.size(); i++){
 
                 // Get the rules of the expansion as string
-                String ruleStr = exspansions.get(i).Description();
+                String ruleStr = expansions.get(i).Description();
 
                 // Set the ID
                 int id = i + 1;
 
                 // Get a color based on whether or not the expansion is activated
-                String color = exspansions.get(i).enabled ? ColorUtils.TEXT_GREEN : ColorUtils.TEXT_RED;
+                String color = expansions.get(i).enabled ? ColorUtils.TEXT_GREEN : ColorUtils.TEXT_RED;
 
                 builder.append(new String(color + "(" + (id) + ")" + " Expansion " + (id) + ": " + ColorUtils.TEXT_WHITE + ruleStr ));
             }
@@ -113,7 +113,7 @@ public class ExpansionManager {
             }
 
             // Close the scanner as to ensure no resource leaks.
-            scanner.close();
+            //scanner.close();
         }
     }
 }

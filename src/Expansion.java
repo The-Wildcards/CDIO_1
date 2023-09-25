@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Expansion {
     public int id;
     public boolean enabled = false;
@@ -11,7 +13,7 @@ public class Expansion {
         return "";
     }
 
-    public boolean CheckRules(Dice dice1, Dice dice2){
+    public boolean CheckRules(List<Dice> dices){
         return true;
     }
 }
@@ -29,9 +31,9 @@ class Exp1 extends Expansion {
     }
 
     @Override
-    public boolean CheckRules(Dice dice1, Dice dice2) {
+    public boolean CheckRules(List<Dice> dices) {
 
-        if (dice1.getRollValue() == dice2.getRollValue()) {
+        if (dices.get(0).getRollValue() == dices.get(1).getRollValue()) {
             return true;
         } else {
             return false;
@@ -51,7 +53,7 @@ class Exp2 extends Expansion {
     }
 
     @Override
-    public boolean CheckRules(Dice dice1, Dice dice2) {
+    public boolean CheckRules(List<Dice> dices) {
         return false;
     }
 }
@@ -68,13 +70,13 @@ class Exp3 extends Expansion {
     }
 
     @Override
-    public boolean CheckRules(Dice dice1, Dice dice2) {
+    public boolean CheckRules(List<Dice> dices) {
 
         //Get the sum of the last roll
         int lastRoll = App.gameManager.lastRoll;
 
-        // Get the roll values of the dices
-        int sum = dice1.getRollValue() + dice2.getRollValue();
+        // Get the sum of the roll values of the dices
+        int sum = dices.get(0).getRollValue() + dices.get(1).getRollValue();
 
         var winner = sum == 12 && sum == lastRoll ? true : false;
         return winner;
@@ -94,7 +96,7 @@ class Exp4 extends Expansion {
     }
 
     @Override
-    public boolean CheckRules(Dice dice1, Dice dice2) {
+    public boolean CheckRules(List<Dice> dices) {
         return false;
     }
 }

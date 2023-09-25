@@ -13,7 +13,10 @@ public class App {
             expansionManager.SetupExpansions();
         }
         if(gameManager.gameState == GameState.PLAYING){
-            gameManager.OnDiceRoll();
+            gameManager.OnPlayState();
+        }
+        if(gameManager.gameState == GameState.ENDED){
+            
         }
     }
 }
