@@ -33,7 +33,10 @@ class Exp1 extends Expansion {
     @Override
     public boolean CheckRules(List<Dice> dices) {
 
-        if (dices.get(0).getRollValue() == dices.get(1).getRollValue()) {
+        int value1 = dices.get(0).getRollValue();
+        int value2 = dices.get(1).getRollValue();
+
+        if (value1 == value2 && value1 == 1) {
             return true;
         } else {
             return false;
@@ -72,12 +75,16 @@ class Exp3 extends Expansion {
     @Override
     public boolean CheckRules(List<Dice> dices) {
 
+        // Get the player from the 'Turn Index'
+        Player playerTurn = App.gameManager.players.get(App.gameManager.turnIndex); 
+
         //Get the sum of the last roll
-        int lastRoll = App.gameManager.lastRoll;
+        int lastRoll = playerTurn.lastRoll;
 
         // Get the sum of the roll values of the dices
         int sum = dices.get(0).getRollValue() + dices.get(1).getRollValue();
 
+        // Determine if the player is the winner
         var winner = sum == 12 && sum == lastRoll ? true : false;
         return winner;
     }

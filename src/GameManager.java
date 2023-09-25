@@ -10,9 +10,8 @@ public class GameManager {
 
     public List<Player> players = new ArrayList<>();  
     public List<Dice> dices = new ArrayList<>();
-    public int lastRoll = 0;
+    public int turnIndex = 0;
 
-    private int turnIndex = 0;
     private final int scoreRequirement = 40;
 
     public void Start(){
@@ -157,6 +156,9 @@ public class GameManager {
             }
             else{
                 System.out.println(player.name + " has rolled [" + diceSum + "] and has a score of " + player.score);
+                
+                // Set the previous roll value
+                player.lastRoll = diceSum;
             }
         }
     }
