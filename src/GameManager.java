@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-enum GameState { AWAIT, SETUP, PLAYING, ENDED}
+enum GameState { START, SETUP, PLAYING, ENDED}
 
 public class GameManager {
 
-    public GameState gameState = GameState.AWAIT;
+    public GameState gameState = GameState.START;
 
     public List<Player> players = new ArrayList<>();  
     public List<Dice> dices = new ArrayList<>();
@@ -24,7 +24,6 @@ public class GameManager {
 
         builder.append(new String("(1) Play. \n"));
         builder.append(new String("(2) Rules. \n"));
-        builder.append(new String("(3) Exit. \n"));
 
         System.out.println(builder.toString());
 
@@ -41,10 +40,6 @@ public class GameManager {
                 case 2 -> {
                     // Display rules
                     DisplayRules();
-                }
-                case 3 -> {
-                    System.out.println("Thanks for playing!");
-                    // Exit the terminal
                 }
                 default -> {
                     System.out.println("Please specify a valid number");
@@ -139,8 +134,6 @@ public class GameManager {
             // Increase the 'Turn Index'
             SetNextPlayerTurn();
         }
-
-        scanner.close();
     }
 
     private void OnDiceRoll(Player player){
@@ -159,7 +152,7 @@ public class GameManager {
 
             // Othwerise, handle the game loop based on the current players score.
             if(player.score >= scoreRequirement){
-                System.out.println(player.name + "has rolled [" + diceSum + "] and has won with a score of " + player.score);
+                System.out.println(player.name + " has rolled [" + diceSum + "] and has won with a score of " + player.score);
                 gameState = GameState.ENDED;
             }
             else{
@@ -219,5 +212,16 @@ public class GameManager {
             turnIndex = 0;
         }
     }
+
+    public void OnEndState(){
+        // Create a end message using the StringBuilder
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(new String("\nThanks for playing!\n"));
+
+        // Print the message
+        System.out.println(builder.toString());      
+    }
+
 }
 
