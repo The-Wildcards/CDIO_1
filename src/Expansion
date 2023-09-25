@@ -1,0 +1,21 @@
+public class Expansion{
+
+    public static int id;
+
+    public Expansion (int id){
+        this.id = id;
+    }
+    
+    public static boolean CheckRules(){
+        // Override this function from each expansion
+        System.out.println("false");
+    }   
+}
+
+class Exp1 extends Expansion {
+    @Override public boolean CheckRules(){
+        System.out.println("true"); 
+        
+    }
+}
+

@@ -103,7 +103,6 @@ public class GameManager {
         StringBuilder builder = new StringBuilder();
  
         builder.append(new String("Would you like to include any expansions? \n\n"));
-
         builder.append(new String("(1) Expansion 1: If the player rolls two 1, the player looses all their points.\n"));
         builder.append(new String("(2) Expansion 2: If the player rolls two equals, the player gets an extra turn.\n"));
         builder.append(new String("(3) Expansion 3: If the player in his previous throw, rolled two 6, and rolles two 6 in this roll, he wins the game.\n"));
@@ -145,6 +144,7 @@ public class GameManager {
             }
         }
         
+
         scanner.close();
     }
 }
