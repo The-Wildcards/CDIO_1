@@ -66,7 +66,7 @@ class Exp3 extends Expansion {
 
     @Override
     public String Description(){
-        return "If the player in his previous throw, rolled two 6, and rolls two 6 in this roll, he wins the game.\n";
+        return "If the player in their previous turn, rolled two [6], and rolls two [6] in their next roll, they win the game.\n";
     }
 
     @Override
