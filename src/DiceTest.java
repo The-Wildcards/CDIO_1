@@ -59,7 +59,7 @@ public class DiceTest {
             expected = expectedTable.get(i);
 
             // Calculates the percentage difference
-            diff = Math.abs(count - expected) / ((count + expected) / 2);
+            diff = (Math.abs(count - expected)) / ((count + expected) / 2) * 100;
 
             // Add the results to the hashtable
             percentages.put(i, diff);
