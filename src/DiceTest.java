@@ -2,6 +2,8 @@ import java.util.Hashtable;
 
 public class DiceTest {
     public static void main(String args[]) {
+        System.out.println("Initializing dice test..."); // Announces dice test
+
         // Hashtable for storage of roll counts of the individual dice
         var diceStats = new Hashtable<Integer,Integer>() {{
             for (int i = 1; i <= 6; i++) { // Iterating through the six possibilities for dice roll results
@@ -25,10 +27,15 @@ public class DiceTest {
         // Variable for storage of roll in following for loop
         int roll;
 
+        System.out.println("Rolling dice..."); // Announcing rolling phase
+
         // Rolling the dice 1000 times
         for (int i = 0; i < 1000; i++) {
             roll = dice.rollDice(); // Store dice roll in a variable
+
             diceStats.replace(roll, diceStats.get(roll) + 1); // Add 1 to the count of the number that was rolled
+            
+            System.out.println("Rolled a " + roll); // Announces roll
         }
 
         // Calculate percentage differences
