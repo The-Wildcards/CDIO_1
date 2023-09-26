@@ -122,7 +122,6 @@ class Exp3 extends Expansion {
     }
 }
 
-
 class Exp4 extends Expansion {
 
     public Exp4(int id, boolean enabled) {
