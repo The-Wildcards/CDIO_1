@@ -58,7 +58,9 @@ public class GameManager {
         builder.append(new String("1. It requires two players to play the dice game.\n"));
         builder.append(new String("2. You will take turns shaking the cup and rolling two dice. \n"));
         builder.append(new String("3. The sum of the two dices will be added to your score. \n"));
-        builder.append(new String("4. The first player to reach 40 points has won the game. \n"));
+        builder.append(new String("4. The first player to reach 40 points has won the game. \n\n"));
+        
+        builder.append(new String("(1) Play. \n"));
 
         // Print the message
         System.out.println(builder.toString());
@@ -92,8 +94,6 @@ public class GameManager {
                 players.add(player);
             }
         }
-
-        // We close the scanner in the ExpansionManager which follows.
     }
 
     private void CreateDice(int amount){
@@ -129,9 +129,6 @@ public class GameManager {
 
             // Roll the dice
             OnDiceRoll(playerTurn);
-
-            // Increase the 'Turn Index'
-            SetNextPlayerTurn();
         }
     }
 
@@ -144,72 +141,91 @@ public class GameManager {
         }
 
         // Add the sum to the player score
-        player.score += diceSum;
+        player.AddScore(diceSum);
 
         // Check if any of the expansion rules apply to the dice throw.
-        if(!CheckExpansionRules(player)){
+        List<Expansion> expansionRules = GetExpansionRules();
 
-            // Othwerise, handle the game loop based on the current players score.
+        // Check if there are any expansions rules to apply
+        if(expansionRules.size() > 0){
+            // Apply each of the expansion rules
+            for (Expansion expansion : expansionRules) {
+                expansion.ApplyRules(player, dices);
+
+            }
+
+            // Check if the player has won the game
+            if(player.score >= scoreRequirement){
+                System.out.println(player.name + " has  with a score of " + player.score);
+                gameState = GameState.ENDED;
+            }
+        }
+        else{
+            // Increase the 'Turn Index'
+            SetNextPlayerTurn();
+
+            // Check if the player has won the game
             if(player.score >= scoreRequirement){
                 System.out.println(player.name + " has rolled [" + diceSum + "] and has won with a score of " + player.score);
                 gameState = GameState.ENDED;
             }
             else{
                 System.out.println(player.name + " has rolled [" + diceSum + "] and has a score of " + player.score);
-                
-                // Set the previous roll value
-                player.lastRoll = diceSum;
             }
         }
+
+        // Set the last roll of the player
+        player.lastRoll = diceSum;
     }
 
-    private boolean CheckExpansionRules(Player player){
+    private List<Expansion> GetExpansionRules(){
+        List<Expansion> expansionRules = new ArrayList<>(0);
+
         for (Expansion expansion : App.expansionManager.expansions) {
             // Check if this expansion is enabled, otherwise return
-            if(!expansion.enabled) return false;
+            if(!expansion.enabled) { continue; }
 
-            // Check Expansion 1
-            if(expansion.id == 1){
-                if(expansion.CheckRules(dices)){
-                    System.out.println("Ouch! " + player.name + " rolled two [1] and their score has been reset to 0!");
-                    player.score = 0;
 
-                    return true;
+            // Loop trough each of the expansions and check if their rules are met.
+            switch (expansion.id) {
+                case 1 -> {
+                    if(expansion.CheckRules(dices)){
+                        expansionRules.add(expansion);
+                    }
+                    break;
                 }
-            }
-            // Check Expansion 2
-            if(expansion.id == 2){
-                if(expansion.CheckRules(dices)){
-                    // Insert rule actions here
-
-                    return true;
+                case 2 -> {
+                   if(expansion.CheckRules(dices)){
+                        expansionRules.add(expansion);
+                    }
+                    break;
                 }
-            }
-            // Check Expansion 3
-            if(expansion.id == 3){
-                if(expansion.CheckRules(dices)){
-                    System.out.println("Nice! " + player.name + " rolled two [6] twice in a row and has won the game! ");
-                    gameState = GameState.ENDED;
-                    
-                    return true;
+                case 3 -> {
+                   if(expansion.CheckRules(dices)){
+                        expansionRules.add(expansion);
+                    }
+                    break;
                 }
-            }
-            // Check Expansion 1
-            if(expansion.id == 4){
-                if(expansion.CheckRules(dices)){
-                    // Insert rule actions here
-                    
-                    return true;
+                case 4 -> {
+                   if(expansion.CheckRules(dices)){
+                        expansionRules.add(expansion);
+                    }
+                    break;  
+                }
+                default -> {
+                    System.out.println("Cannot find expansion...");
                 }
             }
         }
 
-        return false;
+        return expansionRules;
     }
 
     private void SetNextPlayerTurn(){
+        // Increase the 'turn index'
         turnIndex += 1;
 
+        // Limit the turn index to the players size
         if(turnIndex > players.size() - 1){
             turnIndex = 0;
         }

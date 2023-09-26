@@ -111,9 +111,6 @@ public class ExpansionManager {
                     System.out.println("Please specify a valid number");
                 }
             }
-
-            // Close the scanner as to ensure no resource leaks.
-            //scanner.close();
         }
     }
 }
