@@ -56,8 +56,8 @@ public class GameManager {
         builder.append(new String("The rules are simple! \n\n"));
 
         builder.append(new String("1. It requires two players to play the dice game.\n"));
-        builder.append(new String("2. You will take turns shaking the cup and rolling two dice. \n"));
-        builder.append(new String("3. The sum of the two dices will be added to your score. \n"));
+        builder.append(new String("2. You will take turns rolling two dice. \n"));
+        builder.append(new String("3. The sum of the two dice will be added to your score. \n"));
         builder.append(new String("4. The first player to reach 40 points has won the game. \n\n"));
         
         builder.append(new String("(1) Play. \n"));
@@ -122,7 +122,7 @@ public class GameManager {
             Player playerTurn = players.get(turnIndex);   
 
             // Print a message
-            System.out.println("\nIt is " + playerTurn.name + " turn. \nPress any key to roll the dices." );
+            System.out.println("\nIt is " + playerTurn.name + " turn. \nPress ENTER to roll the dice." );
 
             // Await any key input.
             scanner.nextLine();
@@ -133,12 +133,12 @@ public class GameManager {
     }
 
     private void OnDiceRoll(Player player){
+        // Roll each of the dice
+        int roll1 = dices.get(0).rollDice();
+        int roll2 = dices.get(1).rollDice();
+
         // Get the sum of the values from the dices
-        int diceSum = 0;
-        for (Dice dice : dices) {
-            int value = dice.rollDice();
-            diceSum += value;
-        }
+        int diceSum = roll1 + roll2;
 
         // Add the sum to the player score
         player.AddScore(diceSum);
@@ -152,12 +152,33 @@ public class GameManager {
             for (Expansion expansion : expansionRules) {
                 expansion.ApplyRules(player, dices);
 
+                if(expansion.id == 2){
+                    if(!expansion.enabled){
+                        // Increase the 'Turn Index'
+                        SetNextPlayerTurn();
+                    }
+                }
+            }
+
+            // If Exp(2) is not enabled, then increase the turn index.
+            Expansion exp2 = expansionRules.stream().filter(x -> x.id == 2).findFirst().orElse(null);
+            if(exp2 == null){
+                // Increase the 'Turn Index'
+                SetNextPlayerTurn();
             }
 
             // Check if the player has won the game
             if(player.score >= scoreRequirement){
-                System.out.println(player.name + " has  with a score of " + player.score);
-                gameState = GameState.ENDED;
+                // If Exp(2) is not enabled, then increase the turn index.
+                Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
+                if(exp4 == null){
+                    System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "] and has won with a score of " + player.score);
+                    gameState = GameState.ENDED;
+                }
+                else{
+                    
+                }
+
             }
         }
         else{
@@ -166,11 +187,11 @@ public class GameManager {
 
             // Check if the player has won the game
             if(player.score >= scoreRequirement){
-                System.out.println(player.name + " has rolled [" + diceSum + "] and has won with a score of " + player.score);
+                System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "] and has won with a score of " + player.score);
                 gameState = GameState.ENDED;
             }
             else{
-                System.out.println(player.name + " has rolled [" + diceSum + "] and has a score of " + player.score);
+                System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "] and has a score of " + player.score);
             }
         }
 

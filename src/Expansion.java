@@ -30,7 +30,7 @@ class Exp1 extends Expansion {
 
     @Override
     public String Description() {
-        return "If the player rolls two 1, the player loses all their points.\n";
+        return "If the player rolls [1] [1], the player loses all their points.\n";
 
     }
 
@@ -49,7 +49,7 @@ class Exp1 extends Expansion {
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        System.out.println("Ouch! " + player.name + " rolled two [1] and their score has been reset to 0!");
+        System.out.println("Ouch! " + player.name + " rolled two [1] [1] and their score has been reset to 0!");
         player.ResetScore();
     }
 }
@@ -79,14 +79,11 @@ class Exp2 extends Expansion {
 
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        // Get the sum of the roll values of the dices
-        int diceSum = dices.get(0).getRollValue() + dices.get(1).getRollValue();
+        int value1 = dices.get(0).getRollValue();
+        int value2 = dices.get(1).getRollValue();
 
         // Print a message
-        System.out.println(player.name + " has rolled two [" + diceSum / 2 + "] for an extra turn, and has a score of " + player.score);
-
-        // Set an extra turn for the player
-        // Handled through the game manager
+        System.out.println(player.name + " has rolled [" + value1 + "] " + "["+ value2 + "] for an extra turn, and has a score of " + player.score);
     }
 }
 
@@ -98,7 +95,7 @@ class Exp3 extends Expansion {
 
     @Override
     public String Description(){
-        return "If the player in their previous turn, rolled two [6], and rolls two [6] in their next roll, they win the game.\n";
+        return "If the player in their previous turn, rolled [6] [6], and rolls the same in their next roll, they win the game.\n";
     }
 
     @Override
@@ -120,7 +117,7 @@ class Exp3 extends Expansion {
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        System.out.println("Nice! " + player.name + " rolled two [6] twice in a row and has won the game! ");
+        System.out.println("Nice! " + player.name + " rolled [6] [6] twice in a row and has won the game! ");
         App.gameManager.gameState = GameState.ENDED;
     }
 }
