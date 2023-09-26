@@ -140,8 +140,17 @@ public class GameManager {
         // Get the sum of the values from the dices
         int diceSum = roll1 + roll2;
 
-        // Add the sum to the player score
-        player.AddScore(diceSum);
+        // Create a display score to display in the message
+        int displayScore = player.score >= scoreRequirement ? player.score : player.score + (roll1 + roll2);
+
+        
+        // Display the dice rolls and score
+        System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]" + " and has a score of " + displayScore);
+        
+        // If Exp(4) is enabled and the score is above 40, then print out the exp message.
+        if(displayScore >= 40 && App.expansionManager.expansions.get(3).enabled){
+            System.out.println(player.name + " has to roll two equals to win the game");
+        }
 
         // Check if any of the expansion rules apply to the dice throw.
         List<Expansion> expansionRules = GetExpansionRules();
@@ -151,13 +160,6 @@ public class GameManager {
             // Apply each of the expansion rules
             for (Expansion expansion : expansionRules) {
                 expansion.ApplyRules(player, dices);
-
-                if(expansion.id == 2){
-                    if(!expansion.enabled){
-                        // Increase the 'Turn Index'
-                        SetNextPlayerTurn();
-                    }
-                }
             }
 
             // If Exp(2) is not enabled, then increase the turn index.
@@ -169,17 +171,13 @@ public class GameManager {
 
             // Check if the player has won the game
             if(player.score >= scoreRequirement){
-                // If Exp(2) is not enabled, then increase the turn index.
+                // If Exp(4) is not enabled, then end the game
                 Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
                 if(exp4 == null){
-                    System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "] and has won with a score of " + player.score);
-                    gameState = GameState.ENDED;
+                    System.out.println(player.name + " has won with a score of " + player.score);
+                    gameState = GameState.ENDED;            
                 }
-                else{
-                    
-                }
-
-            }
+            }           
         }
         else{
             // Increase the 'Turn Index'
@@ -187,25 +185,28 @@ public class GameManager {
 
             // Check if the player has won the game
             if(player.score >= scoreRequirement){
-                System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "] and has won with a score of " + player.score);
+                System.out.println(player.name + " has won with a score of " + player.score);
                 gameState = GameState.ENDED;
-            }
-            else{
-                System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "] and has a score of " + player.score);
             }
         }
 
-        // Set the last roll of the player
-        player.lastRoll = diceSum;
+        // Set the last roll of the dice
+        player.lastRoll = diceSum; 
+
+        // Check if whether or not exp(1) is included
+        Expansion exp1 = expansionRules.stream().filter(x -> x.id == 1).findFirst().orElse(null);
+        if(exp1 == null && diceSum != 2){
+            // Add the sum to the player score     
+            player.AddScore(diceSum);
+        }
     }
 
     private List<Expansion> GetExpansionRules(){
-        List<Expansion> expansionRules = new ArrayList<>(0);
+        List<Expansion> expansionRules = new ArrayList<>();
 
         for (Expansion expansion : App.expansionManager.expansions) {
-            // Check if this expansion is enabled, otherwise return
+            // Check if this expansion is enabled, otherwise return1
             if(!expansion.enabled) { continue; }
-
 
             // Loop trough each of the expansions and check if their rules are met.
             switch (expansion.id) {

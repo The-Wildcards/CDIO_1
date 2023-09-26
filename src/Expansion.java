@@ -49,7 +49,7 @@ class Exp1 extends Expansion {
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        System.out.println("Ouch! " + player.name + " rolled two [1] [1] and their score has been reset to 0!");
+        System.out.println("Ouch! " + player.name + " score has been reset to 0!");
         player.ResetScore();
     }
 }
@@ -79,11 +79,8 @@ class Exp2 extends Expansion {
 
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        int value1 = dices.get(0).getRollValue();
-        int value2 = dices.get(1).getRollValue();
-
         // Print a message
-        System.out.println(player.name + " has rolled [" + value1 + "] " + "["+ value2 + "] for an extra turn, and has a score of " + player.score);
+        System.out.println(player.name + " has an extra turn");
     }
 }
 
@@ -117,7 +114,7 @@ class Exp3 extends Expansion {
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        System.out.println("Nice! " + player.name + " rolled [6] [6] twice in a row and has won the game! ");
+        System.out.println("Nice! " + player.name + " rolled [6] [6] twice in a row and has won the game!");
         App.gameManager.gameState = GameState.ENDED;
     }
 }
@@ -135,11 +132,29 @@ class Exp4 extends Expansion {
 
     @Override
     public boolean CheckRules(List<Dice> dices) {
-        return false;
+        // Get the player from the 'Turn Index'
+        Player player = App.gameManager.players.get(App.gameManager.turnIndex); 
+
+        // Rule applies if the players score has reached 40 or above.
+        if((player.score) >= 40){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
+        // Get the rolls of the dices
+        int roll1 = dices.get(0).getRollValue();
+        int roll2 = dices.get(1).getRollValue();
         
+        if(roll1 == roll2){
+            if(player.score >= 40){
+                System.out.println(player.name + " has won the game!");
+                App.gameManager.gameState = GameState.ENDED;
+            }
+        }
     }
 }

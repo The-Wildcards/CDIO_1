@@ -1,4 +1,5 @@
 public class Player {
+
     public String name;
     public int score;
     public int lastRoll;
@@ -9,7 +10,8 @@ public class Player {
     }
 
     public void AddScore(int amount){
-        this.score += amount;
+        if(score < 40)
+            this.score += amount;
     }
 
     public void RemoveScore(int amount){
