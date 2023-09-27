@@ -81,6 +81,9 @@ class Exp2 extends Expansion {
     public void ApplyRules(Player player, List<Dice> dices){
         // Print a message
         System.out.println(player.name + " has an extra turn");
+
+        // Adding an extra turn is handled in the SetNextPlayerTurn() of the GameManager.
+        // It checks whether or not this ruled has been applied, and if it has, i wont change the turn.
     }
 }
 
@@ -135,13 +138,10 @@ class Exp4 extends Expansion {
         // Get the player from the 'Turn Index'
         Player player = App.gameManager.players.get(App.gameManager.turnIndex); 
 
+        int scoreRequirement = 40;
+        
         // Rule applies if the players score has reached 40 or above.
-        if((player.score) >= 40){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return player.score >= scoreRequirement;
     }
     
     @Override
@@ -149,11 +149,14 @@ class Exp4 extends Expansion {
         // Get the rolls of the dices
         int roll1 = dices.get(0).getRollValue();
         int roll2 = dices.get(1).getRollValue();
-        
-        if(roll1 == roll2){
-            if(player.score >= 40){
-                System.out.println(player.name + " has won the game!");
-                App.gameManager.gameState = GameState.ENDED;
+
+        if(roll1 == roll2 && player.scoreMetRequirement){
+            System.out.println(player.name + " has won the game!");
+            App.gameManager.gameState = GameState.ENDED;
+        }
+        else{
+            if(player.score != 0){
+                System.out.println(player.name + " has too roll two equals");
             }
         }
     }

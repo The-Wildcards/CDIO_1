@@ -3,6 +3,7 @@ public class Player {
     public String name;
     public int score;
     public int lastRoll;
+    public boolean scoreMetRequirement;
 
     public Player (String name, int score){
         this.name = name;
@@ -10,8 +11,12 @@ public class Player {
     }
 
     public void AddScore(int amount){
-        if(score < 40)
+        if(score < 40){
             this.score += amount;
+        }
+        else{
+            scoreMetRequirement = true;
+        }
     }
 
     public void RemoveScore(int amount){
@@ -20,5 +25,6 @@ public class Player {
 
     public void ResetScore(){
         this.score = 0;
+        scoreMetRequirement = false;
     }
 }

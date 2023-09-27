@@ -124,7 +124,7 @@ public class GameManager {
             // Print a message
             System.out.println("\nIt is " + playerTurn.name + " turn. \nPress ENTER to roll the dice." );
 
-            // Await any key input.
+            // Await the key input.
             scanner.nextLine();
 
             // Roll the dice
@@ -139,20 +139,14 @@ public class GameManager {
 
         // Get the sum of the values from the dices
         int diceSum = roll1 + roll2;
+    
+        // Set the score of the player
+        player.AddScore(diceSum);
 
-        // Create a display score to display in the message
-        int displayScore = player.score >= scoreRequirement ? player.score : player.score + (roll1 + roll2);
-
-        
         // Display the dice rolls and score
-        System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]" + " and has a score of " + displayScore);
+        System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]" + " and has a score of " + player.score);
         
-        // If Exp(4) is enabled and the score is above 40, then print out the exp message.
-        if(displayScore >= 40 && App.expansionManager.expansions.get(3).enabled){
-            System.out.println(player.name + " has to roll two equals to win the game");
-        }
-
-        // Check if any of the expansion rules apply to the dice throw.
+        // Get a list of expansion rules that apply to the dice throw.
         List<Expansion> expansionRules = GetExpansionRules();
 
         // Check if there are any expansions rules to apply
@@ -160,45 +154,21 @@ public class GameManager {
             // Apply each of the expansion rules
             for (Expansion expansion : expansionRules) {
                 expansion.ApplyRules(player, dices);
-            }
-
-            // If Exp(2) is not enabled, then increase the turn index.
-            Expansion exp2 = expansionRules.stream().filter(x -> x.id == 2).findFirst().orElse(null);
-            if(exp2 == null){
-                // Increase the 'Turn Index'
-                SetNextPlayerTurn();
-            }
-
-            // Check if the player has won the game
-            if(player.score >= scoreRequirement){
-                // If Exp(4) is not enabled, then end the game
-                Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
-                if(exp4 == null){
-                    System.out.println(player.name + " has won with a score of " + player.score);
-                    gameState = GameState.ENDED;            
-                }
-            }           
+            }    
         }
         else{
-            // Increase the 'Turn Index'
-            SetNextPlayerTurn();
-
             // Check if the player has won the game
             if(player.score >= scoreRequirement){
                 System.out.println(player.name + " has won with a score of " + player.score);
-                gameState = GameState.ENDED;
-            }
+                gameState = GameState.ENDED;  
+            } 
         }
+                    
+         // Increase the 'Turn Index'
+        SetNextPlayerTurn(expansionRules);
 
         // Set the last roll of the dice
         player.lastRoll = diceSum; 
-
-        // Check if whether or not exp(1) is included
-        Expansion exp1 = expansionRules.stream().filter(x -> x.id == 1).findFirst().orElse(null);
-        if(exp1 == null && diceSum != 2){
-            // Add the sum to the player score     
-            player.AddScore(diceSum);
-        }
     }
 
     private List<Expansion> GetExpansionRules(){
@@ -243,13 +213,32 @@ public class GameManager {
         return expansionRules;
     }
 
-    private void SetNextPlayerTurn(){
-        // Increase the 'turn index'
-        turnIndex += 1;
+    public void SetNextPlayerTurn(List<Expansion> rules){
+        
+        // Check if whether on not any rules has been applied
+        if(rules != null){
 
-        // Limit the turn index to the players size
-        if(turnIndex > players.size() - 1){
-            turnIndex = 0;
+            // Check if exp(2) has been applied
+            // If it has not, then increase the turn index.
+            Expansion exp2 = rules.stream().filter(x -> x.id == 2).findFirst().orElse(null);
+            if(exp2 == null){
+                // Increase the 'turn index'
+                turnIndex += 1;
+
+                // Limit the turn index to the players size
+                if(turnIndex > players.size() - 1){
+                    turnIndex = 0;
+                }
+            }
+        }
+        else{
+            // Increase the 'turn index'
+            turnIndex += 1;
+    
+            // Limit the turn index to the players size
+            if(turnIndex > players.size() - 1){
+                turnIndex = 0;
+            }
         }
     }
 
@@ -262,6 +251,5 @@ public class GameManager {
         // Print the message
         System.out.println(builder.toString());      
     }
-
 }
 
