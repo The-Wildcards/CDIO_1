@@ -49,7 +49,8 @@ class Exp1 extends Expansion {
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        System.out.println("Ouch! " + player.name + " score has been reset to 0!");
+        // Apply the rule
+        System.out.println(player.name + " score has been reset to 0!");
         player.ResetScore();
     }
 }
@@ -67,6 +68,7 @@ class Exp2 extends Expansion {
 
     @Override
     public boolean CheckRules(List<Dice> dices) {
+
         int value1 = dices.get(0).getRollValue();
         int value2 = dices.get(1).getRollValue();
 
@@ -79,8 +81,21 @@ class Exp2 extends Expansion {
 
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
-        // Print a message
-        System.out.println(player.name + " has an extra turn");
+        // Get the rolls of the dices
+        int roll1 = dices.get(0).getRollValue();
+        int roll2 = dices.get(1).getRollValue();
+
+        // Display the score of the player
+        if(!player.scoreMetRequirement && player.score > 0){
+            if(player.score <= App.gameManager.scoreRequirement - (roll1 + roll2)){
+                System.out.println(player.name + " has a score of " + player.score);
+            }
+        }
+
+        // Display the rule benefit
+        if(player.score < App.gameManager.scoreRequirement){
+            System.out.println(player.name + " has an extra turn");
+        }
 
         // Adding an extra turn is handled in the SetNextPlayerTurn() of the GameManager.
         // It checks whether or not this ruled has been applied, and if it has, i wont change the turn.
@@ -146,9 +161,14 @@ class Exp4 extends Expansion {
     
     @Override
     public void ApplyRules(Player player, List<Dice> dices){
+        
         // Get the rolls of the dices
         int roll1 = dices.get(0).getRollValue();
         int roll2 = dices.get(1).getRollValue();
+
+        if(!player.scoreMetRequirement){
+            System.out.println(player.name + " has a score of " + player.score);
+        }
 
         if(roll1 == roll2 && player.scoreMetRequirement){
             System.out.println(player.name + " has won the game!");
@@ -156,7 +176,7 @@ class Exp4 extends Expansion {
         }
         else{
             if(player.score != 0){
-                System.out.println(player.name + " has too roll two equals");
+                System.out.println(player.name + " has too roll two equals to win");
             }
         }
     }

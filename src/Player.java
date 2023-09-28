@@ -11,7 +11,7 @@ public class Player {
     }
 
     public void AddScore(int amount){
-        if(score < 40){
+        if(score < App.gameManager.scoreRequirement){
             this.score += amount;
         }
         else{

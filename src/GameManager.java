@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import java.util.Scanner;
+
 
 enum GameState { START, SETUP, PLAYING, ENDED}
 
@@ -10,9 +12,8 @@ public class GameManager {
 
     public List<Player> players = new ArrayList<>();  
     public List<Dice> dices = new ArrayList<>();
+    public final int scoreRequirement = 40;
     public int turnIndex = 0;
-
-    private final int scoreRequirement = 40;
 
     public void Start(){
 
@@ -119,16 +120,17 @@ public class GameManager {
         while(gameState == GameState.PLAYING){
 
             // Get the player from the 'Turn Index'
-            Player playerTurn = players.get(turnIndex);   
-
+            Player player = players.get(turnIndex);   
+            
             // Print a message
-            System.out.println("\nIt is " + playerTurn.name + " turn. \nPress ENTER to roll the dice." );
+            System.out.println("\nIt is " + player.name + " turn \nPress ENTER to roll the dice" );
 
             // Await the key input.
             scanner.nextLine();
 
+            
             // Roll the dice
-            OnDiceRoll(playerTurn);
+            OnDiceRoll(player);
         }
     }
 
@@ -143,27 +145,38 @@ public class GameManager {
         // Set the score of the player
         player.AddScore(diceSum);
 
-        // Display the dice rolls and score
-        System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]" + " and has a score of " + player.score);
-        
         // Get a list of expansion rules that apply to the dice throw.
         List<Expansion> expansionRules = GetExpansionRules();
 
         // Check if there are any expansions rules to apply
         if(expansionRules.size() > 0){
+            // Display the dice rolls
+            System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]");
+
             // Apply each of the expansion rules
             for (Expansion expansion : expansionRules) {
                 expansion.ApplyRules(player, dices);
-            }    
+            }   
         }
         else{
-            // Check if the player has won the game
-            if(player.score >= scoreRequirement){
-                System.out.println(player.name + " has won with a score of " + player.score);
-                gameState = GameState.ENDED;  
-            } 
+            // Display the dice rolls and score
+            System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]");
+            System.out.println(player.name + " has a score of " + player.score);
         }
-                    
+           
+        // Check if the player has won the game
+        if(player.scoreMetRequirement){
+            // Check if exp(4) has been applied
+            // If it has not, then proceed to end the game.
+            Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
+            if(exp4 == null){      
+                // Check if the player has won the game
+                Player winner = players.get(0).score > players.get(1).score ? players.get(0) : players.get(1);
+                System.out.println(winner.name + " has won with a score of " + winner.score);      
+                gameState = GameState.ENDED;  
+            }
+        }
+        
          // Increase the 'Turn Index'
         SetNextPlayerTurn(expansionRules);
 
@@ -214,7 +227,6 @@ public class GameManager {
     }
 
     public void SetNextPlayerTurn(List<Expansion> rules){
-        
         // Check if whether on not any rules has been applied
         if(rules != null){
 
