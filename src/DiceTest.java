@@ -44,7 +44,7 @@ public class DiceTest {
         percentages = compareStats(diceStats, expectedStats);
 
         // Display results
-        displayResults(diceStats, percentages);
+        displayResults(diceStats, percentages, testLength);
     }
 
     // Gives the percentage difference between a hashtable of roll stats and the expected stats
@@ -71,13 +71,13 @@ public class DiceTest {
         return percentages;
     }
 
-    static void displayResults(Hashtable<Integer,Integer> rollsTable, Hashtable<Integer,Double> percentagesTable) {
+    static void displayResults(Hashtable<Integer,Integer> rollsTable, Hashtable<Integer,Double> percentagesTable, int testLength) {
         // Variable for whether the test has succeeded
         boolean testSucceeded = true;
         
         // Printing
         System.out.println();
-        System.out.println("Test results:");
+        System.out.println(String.format("Test results from %d rolls:", testLength));
 
         // Iterating through the tables
         for (int i = 1; i <= 6; i++) {
