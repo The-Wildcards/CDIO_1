@@ -64,7 +64,8 @@ public class GameManager {
         builder.append(new String("1. It requires two players to play the dice game.\n"));
         builder.append(new String("2. You will take turns rolling two dice. \n"));
         builder.append(new String("3. The sum of the two dice will be added to your score. \n"));
-        builder.append(new String("4. The first player to reach 40 points has won the game. \n\n"));
+        builder.append(new String("4. If the starting player wins, the player who didn't start gets an extra turn. \n"));
+        builder.append(new String("5. When a player reaches 40 points, the player with the most points wins.\n\n"));
         
         builder.append(new String("(1) Play. \n"));
 
@@ -269,11 +270,7 @@ public class GameManager {
     }
 
     private void DetermineWinner(){
-            // Check if exp(4) has been applied
-            // If it has not, then proceed to end the game.
-            Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
-            if(exp4 == null){      
-                // Check which player won the game
+                // Check if the game ended in a tie
                 if(players.get(0).score == players.get(1).score){
                     System.out.println("The game ended in a tie!");
                 }
@@ -283,8 +280,8 @@ public class GameManager {
                     System.out.println(winner.name + " has won with a score of " + winner.score);      
                 }
 
-                gameState = GameState.ENDED;  
-            }
+                // End the game
+                gameState = GameState.ENDED;
     }
 
     public void OnEndState(){
