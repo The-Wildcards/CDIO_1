@@ -94,7 +94,7 @@ public class GameManager {
             String name = scanner.nextLine();
 
             // Create a new player with the specified name.
-            Player player = new Player(name, 0);
+            Player player = new Player(i,name, 0);
 
             // Add the player to the list of players.
             if(!players.contains(player)){
@@ -269,15 +269,10 @@ public class GameManager {
         }
     }
 
-    private void DetermineWinner(){
+    public void DetermineWinner(){
                 // Check if the game ended in a tie
                 if(players.get(0).score == players.get(1).score){
                     System.out.println("The game ended in a tie!");
-                }
-                else{
-                    // Get the winner based on the the highest score.
-                    Player winner = players.get(0).score > players.get(1).score ? players.get(0) : players.get(1);
-                    System.out.println(winner.name + " has won with a score of " + winner.score);      
                 }
 
                 // End the game
@@ -285,6 +280,9 @@ public class GameManager {
     }
 
     public void OnEndState(){
+        Player winner = players.get(0).score > players.get(1).score ? players.get(0) : players.get(1);
+        System.out.println(winner.name + " has won with a score of " + winner.score);
+
         // Create a end message using the StringBuilder
         StringBuilder builder = new StringBuilder();
 
