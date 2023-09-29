@@ -1,19 +1,24 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 import java.util.Scanner;
 
 
-enum GameState { START, SETUP, PLAYING, ENDED}
+enum GameState { START, SETUP, PLAYING, LASTTURN, ENDED}
 
 public class GameManager {
 
     public GameState gameState = GameState.START;
-
     public List<Player> players = new ArrayList<>();  
     public List<Dice> dices = new ArrayList<>();
+
+    // Score management
     public final int scoreRequirement = 40;
+
+    // Turn management
     public int turnIndex = 0;
+
+    // Expansion management
+    public List<Expansion> expansionRules = new ArrayList<>();
 
     public void Start(){
 
@@ -121,7 +126,7 @@ public class GameManager {
 
             // Get the player from the 'Turn Index'
             Player player = players.get(turnIndex);   
-            
+                       
             // Print a message
             System.out.println("\nIt is " + player.name + " turn \nPress ENTER to roll the dice" );
 
@@ -134,52 +139,61 @@ public class GameManager {
         }
     }
 
+    public void OnLastTurnState(){
+        // Create a scanner to read the next input
+        Scanner scanner = new Scanner(System.in);
+
+        // Get the player from the 'Turn Index'
+        Player player = players.get(turnIndex);   
+                    
+        // Print a message
+        System.out.println("\nIt is " + player.name + " last turn \nPress ENTER to roll the dice" );
+
+        // Await the key input.
+        scanner.nextLine();
+
+        // Roll the dice
+        OnDiceRoll(player);
+
+        // Determine the winner
+        DetermineWinner();
+    }
+    
     private void OnDiceRoll(Player player){
         // Roll each of the dice
         int roll1 = dices.get(0).rollDice();
         int roll2 = dices.get(1).rollDice();
-
+        
         // Get the sum of the values from the dices
         int diceSum = roll1 + roll2;
     
         // Set the score of the player
         player.AddScore(diceSum);
-
+        
         // Get a list of expansion rules that apply to the dice throw.
-        List<Expansion> expansionRules = GetExpansionRules();
-
+        expansionRules = GetExpansionRules();
+        
         // Check if there are any expansions rules to apply
         if(expansionRules.size() > 0){
             // Display the dice rolls
             System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]");
-
+            
             // Apply each of the expansion rules
             for (Expansion expansion : expansionRules) {
                 expansion.ApplyRules(player, dices);
             }   
         }
         else{
-            // Display the dice rolls and score
-            System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]");
-            System.out.println(player.name + " has a score of " + player.score);
-        }
-           
-        // Check if the player has won the game
-        if(player.scoreMetRequirement){
-            // Check if exp(4) has been applied
-            // If it has not, then proceed to end the game.
-            Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
-            if(exp4 == null){      
-                // Check if the player has won the game
-                Player winner = players.get(0).score > players.get(1).score ? players.get(0) : players.get(1);
-                System.out.println(winner.name + " has won with a score of " + winner.score);      
-                gameState = GameState.ENDED;  
+            if(!player.scoreMetRequirement){
+                // Display the dice rolls and score
+                System.out.println(player.name + " has rolled [" + roll1 + "] " + "["+ roll2 + "]");
+                System.out.println(player.name + " has a score of " + player.score);
             }
         }
         
-         // Increase the 'Turn Index'
+        // Increase the 'Turn Index'
         SetNextPlayerTurn(expansionRules);
-
+        
         // Set the last roll of the dice
         player.lastRoll = diceSum; 
     }
@@ -200,7 +214,7 @@ public class GameManager {
                     break;
                 }
                 case 2 -> {
-                   if(expansion.CheckRules(dices)){
+                    if(expansion.CheckRules(dices)){
                         expansionRules.add(expansion);
                     }
                     break;
@@ -213,7 +227,7 @@ public class GameManager {
                 }
                 case 4 -> {
                    if(expansion.CheckRules(dices)){
-                        expansionRules.add(expansion);
+                       expansionRules.add(expansion);
                     }
                     break;  
                 }
@@ -225,18 +239,18 @@ public class GameManager {
 
         return expansionRules;
     }
-
+    
     public void SetNextPlayerTurn(List<Expansion> rules){
         // Check if whether on not any rules has been applied
         if(rules != null){
-
+            
             // Check if exp(2) has been applied
             // If it has not, then increase the turn index.
             Expansion exp2 = rules.stream().filter(x -> x.id == 2).findFirst().orElse(null);
             if(exp2 == null){
                 // Increase the 'turn index'
                 turnIndex += 1;
-
+                
                 // Limit the turn index to the players size
                 if(turnIndex > players.size() - 1){
                     turnIndex = 0;
@@ -252,6 +266,25 @@ public class GameManager {
                 turnIndex = 0;
             }
         }
+    }
+
+    private void DetermineWinner(){
+            // Check if exp(4) has been applied
+            // If it has not, then proceed to end the game.
+            Expansion exp4 = expansionRules.stream().filter(x -> x.id == 4).findFirst().orElse(null);
+            if(exp4 == null){      
+                // Check which player won the game
+                if(players.get(0).score == players.get(1).score){
+                    System.out.println("The game ended in a tie!");
+                }
+                else{
+                    // Get the winner based on the the highest score.
+                    Player winner = players.get(0).score > players.get(1).score ? players.get(0) : players.get(1);
+                    System.out.println(winner.name + " has won with a score of " + winner.score);      
+                }
+
+                gameState = GameState.ENDED;  
+            }
     }
 
     public void OnEndState(){

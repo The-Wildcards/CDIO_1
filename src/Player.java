@@ -13,6 +13,12 @@ public class Player {
     public void AddScore(int amount){
         if(score < App.gameManager.scoreRequirement){
             this.score += amount;
+
+            if(score >= App.gameManager.scoreRequirement){
+                if(!App.expansionManager.expansions.get(3).enabled){
+                    App.gameManager.gameState = GameState.LASTTURN;  
+                }
+            }
         }
         else{
             scoreMetRequirement = true;

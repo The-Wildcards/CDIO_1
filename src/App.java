@@ -14,6 +14,9 @@ public class App {
         if(gameManager.gameState == GameState.PLAYING){
             gameManager.OnPlayState();
         }
+        if(gameManager.gameState == GameState.LASTTURN){
+            gameManager.OnLastTurnState();
+        }
         if(gameManager.gameState == GameState.ENDED){
             gameManager.OnEndState();
         }

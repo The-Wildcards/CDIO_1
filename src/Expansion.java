@@ -52,6 +52,7 @@ class Exp1 extends Expansion {
         // Apply the rule
         System.out.println(player.name + " score has been reset to 0!");
         player.ResetScore();
+        App.gameManager.gameState = GameState.PLAYING;
     }
 }
 
@@ -176,7 +177,7 @@ class Exp4 extends Expansion {
         }
         else{
             if(player.score != 0){
-                System.out.println(player.name + " has too roll two equals to win");
+                System.out.println(player.name + " has to roll two equals to win");
             }
         }
     }
