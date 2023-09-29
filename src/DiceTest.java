@@ -4,6 +4,8 @@ public class DiceTest {
     public static void main(String args[]) {
         System.out.println("Initializing dice test..."); // Announces dice test
 
+        int testLength = 1000; // The amount of rolls the test consists of
+
         // Hashtable for storage of roll counts of the individual dice
         var diceStats = new Hashtable<Integer,Integer>() {{
             for (int i = 1; i <= 6; i++) { // Iterating through the six possibilities for dice roll results
@@ -14,7 +16,7 @@ public class DiceTest {
         // Hashtable of statistically expected values for comparison with diceStats
         var expectedStats = new Hashtable<Integer,Double>() {{
             for (int i = 1; i <= 6; i++) { // Iterating through the six possibilities for dice roll results
-                put(i, 1000d/6d); // Sets the initial value of all counts to 1000/6
+                put(i, (double) testLength/6d); // Sets the initial value of all counts to a sixth of testLength
             }
         }};
 
@@ -25,12 +27,12 @@ public class DiceTest {
         Dice dice = new Dice(0);
 
         // Variable for storage of roll in following for loop
-        int roll;
+        int roll; 
 
         System.out.println("Rolling dice..."); // Announcing rolling phase
 
-        // Rolling the dice 1000 times
-        for (int i = 0; i < 1000; i++) {
+        // Rolling the dice as many times as testLength dictates
+        for (int i = 0; i < testLength; i++) {
             roll = dice.rollDice(); // Store dice roll in a variable
 
             diceStats.replace(roll, diceStats.get(roll) + 1); // Add 1 to the count of the number that was rolled
@@ -42,7 +44,7 @@ public class DiceTest {
         percentages = compareStats(diceStats, expectedStats);
 
         // Display results
-        displayResults(diceStats, percentages);
+        displayResults(diceStats, percentages, testLength);
     }
 
     // Gives the percentage difference between a hashtable of roll stats and the expected stats
@@ -69,13 +71,13 @@ public class DiceTest {
         return percentages;
     }
 
-    static void displayResults(Hashtable<Integer,Integer> rollsTable, Hashtable<Integer,Double> percentagesTable) {
+    static void displayResults(Hashtable<Integer,Integer> rollsTable, Hashtable<Integer,Double> percentagesTable, int testLength) {
         // Variable for whether the test has succeeded
         boolean testSucceeded = true;
         
         // Printing
         System.out.println();
-        System.out.println("Test results:");
+        System.out.println(String.format("Test results from %d rolls:", testLength));
 
         // Iterating through the tables
         for (int i = 1; i <= 6; i++) {
