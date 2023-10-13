@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 
-enum GameState { START, SETUP, PLAYING, LASTTURN, ENDED}
+enum GameState { START, SETUP, PLAYING, LASTTURN, ENDED }
 
 public class GameManager {
 
